@@ -8,11 +8,25 @@ Console.WriteLine("Hello, World!");
 
 var clientSocket = new TcpClient("127.0.0.1", 4646);
 var ns = clientSocket.GetStream();
+
 Console.WriteLine("OK");
+var receiveBuffer = new byte[5000000];
+while (true)
+{
+    if (ns.DataAvailable == true)
+    {
+        ns.Read(receiveBuffer, 0, receiveBuffer.Length);
+        var (userInfos, dictionary )= (ValueTuple<object, string[]>)DataHelp.ByteArrayToObject(receiveBuffer);
 
-var receiveBuffer = new byte[1024];
-ns.Read(receiveBuffer, 0, receiveBuffer.Length);
-var userInfos = DataHelp.ByteArrayToObject(receiveBuffer);
+        var cracker = new Cracking();
+        cracker.RunCracking((IEnumerable<UserInfo>) userInfos,dictionary );
 
-var cracker = new Cracking();
-cracker.RunCracking((IEnumerable<UserInfo>) userInfos);
+    }
+    else
+    {
+        Thread.Sleep(0);
+    } 
+}
+  
+
+// var dick = rs.ReadToEnd();

@@ -12,18 +12,14 @@ public class Cracking
         {
             _messageDigest = SHA1.Create();
         }
-        public void RunCracking(IEnumerable<UserInfo> userInfos)
+        public void RunCracking(IEnumerable<UserInfo> userInfos, string[] dictionary)
         {
             var stopwatch = Stopwatch.StartNew();
             Console.WriteLine("passwd opened");
 
             var result = new List<UserInfoClearText>();
-
-            using FileStream fs = new FileStream("webster-dictionary.txt", FileMode.Open, FileAccess.Read);
-            using StreamReader dictionary = new StreamReader(fs);
-            while (!dictionary.EndOfStream)
+            foreach (var dictionaryEntry in dictionary)
             {
-                var dictionaryEntry = dictionary.ReadLine();
                 var partialResult = CheckWordWithVariations(dictionaryEntry, userInfos);
                 result.AddRange(partialResult);
             }
